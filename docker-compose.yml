@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   app:
     build: .
@@ -8,7 +6,7 @@ services:
     depends_on:
       - db
     env_file:
-    - .env
+      - .env
     environment:
       DB_HOST: db
       DB_USER: root
@@ -24,5 +22,9 @@ services:
     ports:
       - "3308:3306"
     volumes:
-    
+      - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+# ✅ MUST be at ROOT level (not inside db)
+volumes:
+  mysql_data:

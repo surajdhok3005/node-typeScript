@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { db } from "../config/db";
 import { Enrollment } from "../types/enrollment";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import {io} from '../app';
 
 export const createEnrollment = async (req: Request, res: Response) => {
     const connection = await db.getConnection()
@@ -49,6 +50,16 @@ export const createEnrollment = async (req: Request, res: Response) => {
             "INSERT INTO enrollments (learner_id , course_id) VALUES (?,?)",
             [learner_id, course_id]
         )
+
+            io.emit("new enrollment",{
+                learner_id,
+                course_id,
+                message:"New Enrollment happend"
+            });
+
+            
+
+
         await connection.commit()
         return res.status(200).json({
             message: "Enrollment Created Successfully(transaction).",
